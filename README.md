@@ -1,6 +1,6 @@
 # Pulse-Code-Modulation
 # Aim
-Write a simple Python program for the modulation and demodulation of PCM.
+Write a simple Python program for the modulation and demodulation of PCM,DM.
 # Tools required
 
 Python IDE with numpy and scipy libraries or colab.
@@ -10,89 +10,163 @@ Python IDE with numpy and scipy libraries or colab.
 import numpy as np
 import matplotlib.pyplot as plt
 
-frequency = 2       
-amplitude = 1
-duration = 2       
 
-analog_rate = 1000  
-sample_rate = 10    
-num_levels = 8     
- 
-t = np.linspace(0, duration, int(analog_rate * duration), endpoint=False)
-analog_signal = amplitude * np.sin(2 * np.pi * frequency * t)
-plt.figure(figsize=(8,4))
-plt.plot(t, analog_signal)
+
+fm = 2                  
+fs = 20                 
+duration = 2            
+n_bits = 3              
+
+t = np.linspace(0, duration, 1000)    
+ts = np.arange(0, duration, 1/fs)     
+
+
+x = np.sin(2 * np.pi * fm * t)
+
+xs = np.sin(2 * np.pi * fm * ts)
+
+
+
+L = 2 ** n_bits         
+x_min = -1
+x_max = 1
+
+delta = (x_max - x_min) / L
+
+
+xq = np.round((xs - x_min) / delta) * delta + x_min
+xq = np.clip(xq, x_min, x_max)
+
+
+
+indices = ((xq - x_min) / delta).astype(int)
+indices = np.clip(indices, 0, L - 1)
+
+binary_codes = [format(i, f'0{n_bits}b') for i in indices]
+
+print("Sampled Value\tQuantized Value\tPCM Code")
+print("------------------------------------------------")
+for i in range(len(xs)):
+    print(f"{xs[i]:.3f}\t\t{xq[i]:.3f}\t\t{binary_codes[i]}")
+
+
+
+pcm_bits = ""
+
+for code in binary_codes:
+    pcm_bits += code
+
+pcm_wave = [int(bit) for bit in pcm_bits]
+
+bit_time = np.arange(len(pcm_wave))
+
+
+
+decoded_indices = np.array([int(code, 2) for code in binary_codes])
+decoded_signal = decoded_indices * delta + x_min
+
+
+plt.figure(figsize=(12, 14))
+
+plt.subplot(5, 1, 1)
+plt.plot(t, x)
 plt.title("Original Analog Signal")
-plt.xlabel("Time (s)")
+plt.xlabel("Time")
 plt.ylabel("Amplitude")
 plt.grid(True)
-plt.show()
 
-t_samp = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
-sampled_signal = amplitude * np.sin(2 * np.pi * frequency * t_samp)
-plt.figure(figsize=(8,4))
-plt.stem(t_samp, sampled_signal, linefmt='r-', markerfmt='ro', basefmt=' ')
+plt.subplot(5, 1, 2)
+plt.stem(ts, xs, basefmt=" ")
 plt.title("Sampled Signal")
-plt.xlabel("Time (s)")
+plt.xlabel("Time")
 plt.ylabel("Amplitude")
 plt.grid(True)
-plt.show()
 
-max_amp = np.max(np.abs(sampled_signal))
-step = 2 * max_amp / num_levels
-indices = np.round((sampled_signal + max_amp) / step)
-indices = np.clip(indices, 0, num_levels-1).astype(int)
-quantized_signal = (indices * step) - max_amp
-plt.figure(figsize=(8,4))
-plt.step(t_samp, quantized_signal, where='mid', color='g')
+
+plt.subplot(5, 1, 3)
+plt.stem(ts, xq, basefmt=" ")
 plt.title("Quantized Signal")
-plt.xlabel("Time (s)")
+plt.xlabel("Time")
 plt.ylabel("Amplitude")
 plt.grid(True)
-plt.show()
 
-num_bits = int(np.log2(num_levels))
-binary_codes = [np.binary_repr(idx, width=num_bits) for idx in indices]
-print("Binary Codes for Samples:", binary_codes)
 
-transmitted_codes = binary_codes.copy()
+plt.subplot(5, 1, 4)
+plt.step(bit_time, pcm_wave, where='post')
+plt.ylim(-0.2, 1.2)
+plt.title("PCM Output Waveform (Binary Pulse Train)")
+plt.xlabel("Bit Position")
+plt.ylabel("Binary Level")
+plt.grid(True)
 
-decoded_indices = np.array([int(code, 2) for code in transmitted_codes])
-decoded_signal = (decoded_indices * step) - max_amp
-plt.figure(figsize=(8,4))
-plt.step(t_samp, decoded_signal, where='mid', color='purple')
-plt.stem(t_samp, decoded_signal, linefmt='g:', markerfmt='go', basefmt=' ')
-plt.title("Reconstructed PCM Signal (Demodulated)")
-plt.xlabel("Time (s)")
+
+plt.subplot(5, 1, 5)
+plt.step(ts, decoded_signal, where='mid')
+plt.title("PCM Demodulated (Reconstructed) Signal")
+plt.xlabel("Time")
 plt.ylabel("Amplitude")
 plt.grid(True)
-plt.show()
 
-plt.figure(figsize=(8,4))
-plt.plot(t, analog_signal, label='Original Analog', alpha=0.5)
-plt.step(t_samp, decoded_signal, where='mid', color='purple', label='Reconstructed PCM')
-plt.title("Original vs Reconstructed PCM Signal")
-plt.xlabel("Time (s)")
-plt.ylabel("Amplitude")
-plt.grid(True)
-plt.legend()
+plt.tight_layout()
 plt.show()
 
 ```
 # Output Waveform
 
-<img width="711" height="393" alt="image" src="https://github.com/user-attachments/assets/e2ebc5a1-ba27-4be3-b048-2d23ca53e962" />
+Sampled Value	Quantized Value	PCM Code
+------------------------------------------------
+0.000		0.000		100
+0.588		0.500		110
+0.951		1.000		111
+0.951		1.000		111
+0.588		0.500		110
+0.000		0.000		100
+-0.588		-0.500		010
+-0.951		-1.000		000
+-0.951		-1.000		000
+-0.588		-0.500		010
+-0.000		0.000		100
+0.588		0.500		110
+0.951		1.000		111
+0.951		1.000		111
+0.588		0.500		110
+0.000		0.000		100
+-0.588		-0.500		010
+-0.951		-1.000		000
+-0.951		-1.000		000
+-0.588		-0.500		010
+-0.000		0.000		100
+0.588		0.500		110
+0.951		1.000		111
+0.951		1.000		111
+0.588		0.500		110
+0.000		0.000		100
+-0.588		-0.500		010
+-0.951		-1.000		000
+-0.951		-1.000		000
+-0.588		-0.500		010
+-0.000		0.000		100
+0.588		0.500		110
+0.951		1.000		111
+0.951		1.000		111
+0.588		0.500		110
+0.000		0.000		100
+-0.588		-0.500		010
+-0.951		-1.000		000
+-0.951		-1.000		000
+-0.588		-0.500		010
 
-<img width="711" height="393" alt="image" src="https://github.com/user-attachments/assets/f40f9f00-2b60-4f0b-ae20-e1775279774f" />
+<img width="1189" height="1389" alt="image" src="https://github.com/user-attachments/assets/4b1205c4-d6a0-492f-bdb1-4d549e06fd18" />
 
-<img width="711" height="393" alt="image" src="https://github.com/user-attachments/assets/8182a07e-304a-437f-9ebb-2ed234fcd289" />
+<img width="1189" height="1389" alt="image" src="https://github.com/user-attachments/assets/121382f4-6581-4b5a-ba2d-28ab927325d3" />
 
-Binary Codes for Samples: ['100', '111', '110', '010', '000', '100', '111', '110', '010', '000', '100', '111', '110', '010', '000', '100', '111', '110', '010', '000']
+<img width="1189" height="1389" alt="image" src="https://github.com/user-attachments/assets/130dada6-2608-42f7-9fde-6f95feb5cf09" />
 
-<img width="711" height="393" alt="image" src="https://github.com/user-attachments/assets/4a1c2378-7962-4d56-899c-a9e5b06f9f05" />
+<img width="1189" height="1389" alt="image" src="https://github.com/user-attachments/assets/ea4db2fe-ef8a-4c72-8805-26b8c195ddf1" />
 
-<img width="711" height="393" alt="image" src="https://github.com/user-attachments/assets/38f0109b-c761-404a-b2e0-e63013b55162" />
+<img width="1189" height="1389" alt="image" src="https://github.com/user-attachments/assets/3937f9a2-5175-48e0-9f03-a363a82b0ec0" />
+
 
 # Results
 
-Thus, the program for pulse code modulation  have been executed and the waveforms have been verified successfully.
+Thus, the program for pulse code modulation and Delta modulation have been executed and the waveforms have been verified successfully.
