@@ -158,13 +158,7 @@ Sampled Value	Quantized Value	PCM Code
 
 <img width="1189" height="1389" alt="image" src="https://github.com/user-attachments/assets/4b1205c4-d6a0-492f-bdb1-4d549e06fd18" />
 
-<img width="1189" height="1389" alt="image" src="https://github.com/user-attachments/assets/121382f4-6581-4b5a-ba2d-28ab927325d3" />
 
-<img width="1189" height="1389" alt="image" src="https://github.com/user-attachments/assets/130dada6-2608-42f7-9fde-6f95feb5cf09" />
-
-<img width="1189" height="1389" alt="image" src="https://github.com/user-attachments/assets/ea4db2fe-ef8a-4c72-8805-26b8c195ddf1" />
-
-<img width="1189" height="1389" alt="image" src="https://github.com/user-attachments/assets/3937f9a2-5175-48e0-9f03-a363a82b0ec0" />
 
 
 # Results
