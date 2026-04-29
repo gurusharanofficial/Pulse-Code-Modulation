@@ -2,7 +2,7 @@
 
 # Aim
 
-Write a simple Python program for the modulation and demodulation of PCM,DM.
+Write a simple Python program for the modulation and demodulation of PCM.
 
 # Tools required
 
@@ -131,4 +131,4 @@ Sampled Value	Quantized Value	PCM Code
 
 # Results
 
-Thus, the program for pulse code modulation and Delta modulation have been executed and the waveforms have been verified successfully.
+Thus, the program for pulse code modulation have been executed and the waveforms have been verified successfully.
