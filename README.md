@@ -124,8 +124,7 @@ Sampled Value	Quantized Value	PCM Code
 -0.951		-1.000		000
 -0.588		-0.500		010
 ```
-
-<img width="1189" height="1389" alt="image" src="https://github.com/user-attachments/assets/4b1205c4-d6a0-492f-bdb1-4d549e06fd18" />
+<img width="657" height="743" alt="image" src="https://github.com/user-attachments/assets/cc3edb18-a13e-4f52-aba6-16723514e07b" />
 
 # Results
 
