@@ -8,6 +8,10 @@ Write a simple Python program for the modulation and demodulation of PCM.
 
 Python IDE with numpy and scipy libraries or colab.
 
+# Theory
+
+Pulse Code Modulation (PCM) converts an analog signal into digital form by sampling it (based on the Nyquist Theorem), quantizing the samples into discrete levels, and encoding them into binary bits; at the receiver, the signal is decoded and filtered to reconstruct the original waveform with good noise immunity but higher bandwidth. Delta Modulation (DM) is a simpler technique that transmits only the difference between successive samples as single bits (increase or decrease), producing a staircase approximation of the signal; it requires less bandwidth and is easier to implement but suffers from errors like slope overload and granular noise.
+
 # Program
 
 ```
